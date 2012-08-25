@@ -22,7 +22,7 @@ use POSIX;
 #
 ##################################################
 my $path = `pwd`;
-my $OS;
+my $OS=0;
 my $ID;
 my $vCode;
 ##################################################
@@ -34,7 +34,7 @@ my $vCode;
 unless (-d "tmp"){
 	mkdir "tmp" or die "cannot create tmp folder";
 }
-unless (-e "SQL"){
+unless (-d "SQL"){
 	die "SQL files missing";
 }
 
@@ -52,12 +52,15 @@ my %queries =(
 	"mail", "",
 	"standing", "",
 );
+
+my $dbug =0;	#Debug mode disabled by default
+				#Debug will SAVE all xmls and write to screen
 ##################################################
 #
 #		MAIN
 #
 ##################################################
-
+&linargs;
 
 
 ##################################################
@@ -67,7 +70,21 @@ my %queries =(
 #
 ##################################################
 sub linargs{
-
+	while (my $args = shift (@ARGV)){
+		if ($args =~ /-debug/){
+			$dbug=1;
+		}
+		elsif(lc($args) = /-id/){
+			(undef, $ID) = split(/id=/,$args);
+		}
+		elsif(lc($args) = /-vcode/){
+			(undef, $vCode) = split(/vcode=/,$args);
+		}
+		elsif($args = /-h/ or $args= /-help/){
+			&help;
+			exit;
+		}
+	}
 }
 ##################################################
 #
@@ -85,5 +102,8 @@ sub char_load{
 #
 ##################################################
 sub dl_API{
+
+}
+sub help{
 
 }
